@@ -141,4 +141,13 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
   }
+
+  @keyframes saloon-eq {
+    from {
+      transform: scaleY(0.35);
+    }
+    to {
+      transform: scaleY(1.15);
+    }
+  }
 }
