@@ -1,131 +1,72 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import coverAsset from "@/assets/cover-default.jpg.asset.json";
+import { tracks } from "@/lib/tracks";
 
-const PLAYLIST_URI = "spotify:playlist:2AVjI8Z57bqMJVtU3V9X1Q";
 const PLAYLIST_URL =
   "https://open.spotify.com/playlist/2AVjI8Z57bqMJVtU3V9X1Q?si=rZ1U5KR5RuqZyP7s2dvJHw";
-const EMBED_URL = `https://open.spotify.com/embed/playlist/2AVjI8Z57bqMJVtU3V9X1Q?utm_source=generator&theme=0`;
-
-type TrackMeta = { title: string; artist: string; cover: string | null };
-
-type SpotifyIframeApi = {
-  createController: (
-    element: HTMLElement,
-    options: { width: string; height: string; uri: string },
-    callback: (controller: EmbedController) => void,
-  ) => void;
-};
-
-type EmbedController = {
-  play: () => void;
-  pause: () => void;
-  togglePlay: () => void;
-  next: () => void;
-  previous: () => void;
-  addListener: (
-    event: "ready" | "playback_update" | "playback_started",
-    cb: (e: { data?: PlaybackData }) => void,
-  ) => void;
-};
-
-type PlaybackData = {
-  isPaused?: boolean;
-  isBuffering?: boolean;
-  position?: number;
-  duration?: number;
-  playingURI?: string;
-};
-
-declare global {
-  interface Window {
-    onSpotifyIframeApiReady?: (api: SpotifyIframeApi) => void;
-    __spotifyIframeApi?: SpotifyIframeApi;
-  }
-}
 
 function fmt(sec: number) {
-  const total = Math.max(0, Math.floor(sec));
+  const total = Math.max(0, Math.floor(sec || 0));
   const m = Math.floor(total / 60);
   const s = total % 60;
   return `${m}:${s.toString().padStart(2, "0")}`;
 }
 
 export function MusicPlayer() {
-  const mountRef = useRef<HTMLDivElement>(null);
-  const controllerRef = useRef<EmbedController | null>(null);
-  const lastUriRef = useRef<string>("");
-
-  const fetchTrackInfo = useCallback(async (uri: string) => {
-    const id = uri.split(":").pop();
-    if (!id) return;
-    try {
-      const res = await fetch(
-        `https://open.spotify.com/oembed?url=${encodeURIComponent(`https://open.spotify.com/track/${id}`)}`,
-      );
-      if (!res.ok) return;
-      const info: { title?: string; author_name?: string; thumbnail_url?: string } = await res.json();
-      if (info.title) {
-        setTrack({
-          title: info.title,
-          artist: info.author_name ?? "",
-          cover: info.thumbnail_url ?? coverAsset.url,
-        });
-      }
-    } catch {
-      // keep placeholder on failure
-    }
-  }, []);
-  const [ready, setReady] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [index, setIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [track, setTrack] = useState<TrackMeta>({
-    title: "Deluxe Saloon Radio",
-    artist: "90s Bollywood barber shop mix",
-    cover: coverAsset.url,
-  });
-  const [showEmbed, setShowEmbed] = useState(false);
+  const [showList, setShowList] = useState(false);
 
-  useEffect(() => {
-    const mount = mountRef.current;
-    if (!mount) return;
+  const track = tracks[index];
 
-    const init = (api: SpotifyIframeApi) => {
-      if (controllerRef.current) return;
-      api.createController(mount, { width: "0", height: "0", uri: PLAYLIST_URI }, (controller) => {
-        controllerRef.current = controller;
-        setReady(true);
-        controller.addListener("playback_update", ({ data }) => {
-          if (!data) return;
-          setPlaying(!data.isPaused && !data.isBuffering);
-          setPosition((data.position ?? 0) / 1000);
-          setDuration((data.duration ?? 0) / 1000);
-          const uri = data.playingURI;
-          if (uri && uri !== lastUriRef.current) {
-            lastUriRef.current = uri;
-            void fetchTrackInfo(uri);
-          }
-        });
-      });
-    };
-
-    if (window.__spotifyIframeApi) {
-      init(window.__spotifyIframeApi);
-      return;
-    }
-    window.onSpotifyIframeApiReady = (api) => {
-      window.__spotifyIframeApi = api;
-      init(api);
-    };
-    const script = document.createElement("script");
-    script.src = "https://open.spotify.com/embed/iframe-api/v1";
-    script.async = true;
-    document.body.appendChild(script);
+  const play = useCallback(() => {
+    void audioRef.current?.play().catch(() => setPlaying(false));
   }, []);
 
-  const toggle = useCallback(() => controllerRef.current?.togglePlay(), []);
-  const next = useCallback(() => controllerRef.current?.next(), []);
-  const prev = useCallback(() => controllerRef.current?.previous(), []);
+  const toggle = useCallback(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    if (el.paused) play();
+    else el.pause();
+  }, [play]);
+
+  const goto = useCallback((next: number) => {
+    setIndex(((next % tracks.length) + tracks.length) % tracks.length);
+    setPosition(0);
+    setDuration(0);
+  }, []);
+
+  const next = useCallback(() => goto(index + 1), [goto, index]);
+  const prev = useCallback(() => {
+    const el = audioRef.current;
+    if (el && el.currentTime > 3) {
+      el.currentTime = 0;
+      return;
+    }
+    goto(index - 1);
+  }, [goto, index]);
+
+  // when the track changes while playing, continue playback
+  const wasPlaying = useRef(false);
+  useEffect(() => {
+    wasPlaying.current = playing;
+  }, [playing]);
+
+  useEffect(() => {
+    const el = audioRef.current;
+    if (!el) return;
+    el.load();
+    if (wasPlaying.current) void el.play().catch(() => setPlaying(false));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [index]);
+
+  const seek = useCallback((clientRatio: number) => {
+    const el = audioRef.current;
+    if (!el || !el.duration) return;
+    el.currentTime = clientRatio * el.duration;
+  }, []);
 
   const progress = duration ? Math.min(100, (position / duration) * 100) : 0;
 
@@ -141,15 +82,28 @@ export function MusicPlayer() {
           aria-hidden="true"
           className="pointer-events-none absolute -top-1/2 left-1/2 h-[140%] w-[80%] -translate-x-1/2 rounded-[100%] bg-white/15 blur-3xl"
         />
-        {/* hidden Spotify controller */}
-        <div ref={mountRef} className="hidden" aria-hidden="true" />
+
+        <audio
+          ref={audioRef}
+          src={track.audio}
+          preload="none"
+          onPlay={() => setPlaying(true)}
+          onPause={() => setPlaying(false)}
+          onTimeUpdate={(e) => setPosition(e.currentTarget.currentTime)}
+          onLoadedMetadata={(e) => setDuration(e.currentTarget.duration)}
+          onDurationChange={(e) => setDuration(e.currentTarget.duration)}
+          onEnded={next}
+        />
 
         {/* top row */}
-        <div className="flex items-center gap-4">
+        <div className="relative flex items-center gap-4">
           <div className="h-[72px] w-[72px] shrink-0 overflow-hidden rounded-2xl bg-white/10 sm:h-20 sm:w-20">
-            {track.cover ? (
-              <img src={track.cover} alt={`${track.title} cover art`} className="h-full w-full object-cover" />
-            ) : null}
+            <img
+              src={track.cover}
+              alt={`${track.title} cover art`}
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-lg font-semibold text-white sm:text-xl">{track.title}</p>
@@ -170,9 +124,22 @@ export function MusicPlayer() {
         </div>
 
         {/* progress */}
-        <div className="mt-5 flex items-center gap-3">
+        <div className="relative mt-5 flex items-center gap-3">
           <span className="text-sm tabular-nums text-white/60">{fmt(position)}</span>
-          <div className="h-[6px] flex-1 overflow-hidden rounded-full bg-white/15">
+          <div
+            role="button"
+            tabIndex={0}
+            aria-label="Seek"
+            onClick={(e) => {
+              const r = e.currentTarget.getBoundingClientRect();
+              seek((e.clientX - r.left) / r.width);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === "ArrowRight") seek(Math.min(1, (position + 5) / (duration || 1)));
+              if (e.key === "ArrowLeft") seek(Math.max(0, (position - 5) / (duration || 1)));
+            }}
+            className="h-[6px] flex-1 cursor-pointer overflow-hidden rounded-full bg-white/15"
+          >
             <div
               className="h-full rounded-full bg-white/60 transition-[width] duration-300 ease-linear"
               style={{ width: `${progress}%` }}
@@ -182,13 +149,12 @@ export function MusicPlayer() {
         </div>
 
         {/* controls */}
-        <div className="mt-5 flex items-center justify-center gap-10 sm:gap-14">
+        <div className="relative mt-5 flex items-center justify-center gap-10 sm:gap-14">
           <button
             type="button"
             aria-label="Previous track"
             onClick={prev}
-            disabled={!ready}
-            className="text-white transition hover:opacity-80 active:scale-95 disabled:opacity-40"
+            className="text-white transition hover:opacity-80 active:scale-95"
           >
             <svg width="42" height="30" viewBox="0 0 42 30" fill="currentColor" aria-hidden="true">
               <path d="M20 5v20L4 15zM40 5v20L24 15z" />
@@ -198,8 +164,7 @@ export function MusicPlayer() {
             type="button"
             aria-label={playing ? "Pause" : "Play"}
             onClick={toggle}
-            disabled={!ready}
-            className="text-white transition hover:opacity-80 active:scale-95 disabled:opacity-40"
+            className="text-white transition hover:opacity-80 active:scale-95"
           >
             {playing ? (
               <svg width="34" height="38" viewBox="0 0 34 38" fill="currentColor" aria-hidden="true">
@@ -216,8 +181,7 @@ export function MusicPlayer() {
             type="button"
             aria-label="Next track"
             onClick={next}
-            disabled={!ready}
-            className="text-white transition hover:opacity-80 active:scale-95 disabled:opacity-40"
+            className="text-white transition hover:opacity-80 active:scale-95"
           >
             <svg width="42" height="30" viewBox="0 0 42 30" fill="currentColor" aria-hidden="true">
               <path d="M2 5v20l16-10zM22 5v20l16-10z" />
@@ -226,38 +190,47 @@ export function MusicPlayer() {
         </div>
 
         {/* footer row */}
-        <div className="mt-4 flex items-center justify-between text-xs text-white/40">
+        <div className="relative mt-4 flex items-center justify-between text-xs text-white/40">
           <a href={PLAYLIST_URL} target="_blank" rel="noopener noreferrer" className="transition hover:text-white/70">
             Open playlist on Spotify
           </a>
           <button
             type="button"
-            onClick={() => setShowEmbed((v) => !v)}
+            onClick={() => setShowList((v) => !v)}
             className="rounded-full border border-white/15 px-3 py-1 transition hover:border-white/40 hover:text-white/70"
           >
-            {showEmbed ? "Hide playlist" : "Browse playlist"}
+            {showList ? "Hide tracks" : `All ${tracks.length} tracks`}
           </button>
         </div>
       </div>
 
-      {/* expandable Spotify embed */}
+      {/* track list */}
       <div
-        className={`grid transition-all duration-300 ${showEmbed ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+        className={`grid transition-all duration-300 ${showList ? "mt-3 grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
       >
         <div className="overflow-hidden">
-          {showEmbed ? (
-            <iframe
-              data-testid="embed-iframe"
-              title="Deluxe Saloon Spotify playlist"
-              className="rounded-2xl"
-              src={EMBED_URL}
-              width="100%"
-              height="352"
-              frameBorder={0}
-              allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-              loading="lazy"
-            />
-          ) : null}
+          <ul className="max-h-72 overflow-y-auto rounded-2xl bg-white/10 p-2 ring-1 ring-white/20 backdrop-blur-2xl">
+            {tracks.map((t, i) => (
+              <li key={t.audio}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    wasPlaying.current = true;
+                    goto(i);
+                  }}
+                  className={`flex w-full items-center gap-3 rounded-xl px-3 py-2 text-left transition hover:bg-white/10 ${
+                    i === index ? "bg-white/15" : ""
+                  }`}
+                >
+                  <img src={t.cover} alt="" loading="lazy" className="h-9 w-9 rounded-md object-cover" />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm text-white">{t.title}</span>
+                    <span className="block truncate text-xs text-white/45">{t.artist}</span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </div>
