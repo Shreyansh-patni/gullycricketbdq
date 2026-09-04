@@ -154,7 +154,7 @@ function Index() {
 
       {/* player */}
       <div className="z-20 w-full px-4 pb-6 sm:pb-8">
-        <MusicPlayer tracks={TRACKS} />
+        <MusicPlayer />
       </div>
     </div>
   );
