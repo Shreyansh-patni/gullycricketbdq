@@ -95,6 +95,7 @@ function Index() {
   const [playing, setPlaying] = useState(true);
   const [elapsed, setElapsed] = useState(0);
   const [online, setOnline] = useState(28);
+  const [time, setTime] = useState(() => new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
   const elapsedRef = useRef(0);
 
   const track = TRACKS[index] ?? TRACKS[0]!;
