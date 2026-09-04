@@ -143,11 +143,11 @@ function Index() {
       </div>
 
       {/* hero */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6 pt-28 pb-10 text-center">
+      <div className="flex flex-1 flex-col items-center justify-center px-6 pt-44 pb-10 text-center">
         <img
           src={logoAsset.url}
           alt="Deluxe Saloon"
-          className="w-60 max-w-[70vw] -translate-y-5 drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] sm:w-80"
+          className="w-72 max-w-[70vw] -translate-y-7 drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] sm:w-96"
         />
         <h1 className="sr-only">Deluxe Saloon</h1>
       </div>
