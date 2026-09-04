@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import bgAsset from "@/assets/street-bg.png.asset.json";
 import logoAsset from "@/assets/saloon-logo.png.asset.json";
 import { MusicPlayer } from "@/components/player/MusicPlayer";
+import { Github, Instagram, X } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -153,8 +154,60 @@ function Index() {
       </div>
 
       {/* player */}
-      <div className="z-20 w-full px-4 pb-6 sm:pb-8">
+      <div className="z-20 w-full px-4 pb-20 sm:pb-24">
         <MusicPlayer />
+      </div>
+
+      {/* footer */}
+      <div className="pointer-events-none fixed inset-x-0 bottom-0 z-30 flex items-center justify-between p-4 sm:p-5">
+        <a
+          href="https://shreyanshpatni.dev"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="pointer-events-auto text-sm font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] transition hover:text-white/80"
+        >
+          shreyansh patni
+        </a>
+        <div className="pointer-events-auto flex items-center gap-1">
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="rounded-full p-2 text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] transition hover:bg-white/10 hover:shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] active:scale-95"
+          >
+            <Github size={18} />
+          </a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="X"
+            className="rounded-full p-2 text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] transition hover:bg-white/10 hover:shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] active:scale-95"
+          >
+            <X size={18} />
+          </a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Reddit"
+            className="rounded-full p-2 text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] transition hover:bg-white/10 hover:shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] active:scale-95"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm6.5 11.5c0 .8-.7 1.5-1.5 1.5-.4 0-.8-.2-1.1-.4-.9.6-2.1 1-3.4 1.1l.6 2.8 1.9-.4c.2-.9 1-1.6 2-1.6 1.1 0 2 .9 2 2s-.9 2-2 2c-.8 0-1.5-.5-1.8-1.2l-2.5.5c-.3 1.5-1.6 2.6-3.2 2.6s-2.9-1.1-3.2-2.6l-2.5-.5c-.3.7-1 1.2-1.8 1.2-1.1 0-2-.9-2-2s.9-2 2-2c1 0 1.8.7 2 1.6l1.9.4.6-2.8c-1.3-.1-2.5-.5-3.4-1.1-.3.3-.7.4-1.1.4-.8 0-1.5-.7-1.5-1.5s.7-1.5 1.5-1.5c.4 0 .7.1 1 .4.9-.5 2-.8 3.1-.9l1.2-2.8c.2-.4.6-.7 1.1-.7s.9.3 1.1.7l1.2 2.8c1.1.1 2.2.4 3.1.9.3-.2.6-.4 1-.4.8 0 1.5.7 1.5 1.5z" />
+            </svg>
+          </a>
+          <a
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="rounded-full p-2 text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] transition hover:bg-white/10 hover:shadow-[0_4px_20px_rgba(0,0,0,0.35)] hover:drop-shadow-[0_2px_10px_rgba(0,0,0,0.7)] active:scale-95"
+          >
+            <Instagram size={18} />
+          </a>
+        </div>
       </div>
     </div>
   );
