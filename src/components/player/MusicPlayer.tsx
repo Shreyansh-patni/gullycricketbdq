@@ -78,7 +78,9 @@ export function MusicPlayer() {
       api.createController(mount, { width: "0", height: "0", uri: PLAYLIST_URI }, (controller) => {
         controllerRef.current = controller;
         setReady(true);
-        controller.addListener("playback_update", ({ data }) => {
+        controller.addListener("playback_update", (e) => {
+          console.log("SALOON_PLAYBACK", JSON.stringify(e));
+          const data = e?.data;
           if (!data) return;
           setPlaying(!data.isPaused && !data.isBuffering);
           setPosition((data.position ?? 0) / 1000);
