@@ -125,6 +125,13 @@ function Index() {
     return () => window.clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setTime(new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
   const progress = (elapsed / track.duration) * 100;
 
   return (
