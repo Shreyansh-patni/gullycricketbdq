@@ -19,7 +19,7 @@ export function MusicPlayer() {
   const [duration, setDuration] = useState(0);
   const [showList, setShowList] = useState(false);
 
-  const track = tracks[index];
+  const track = tracks[index] ?? tracks[0]!;
 
   const play = useCallback(() => {
     void audioRef.current?.play().catch(() => setPlaying(false));
