@@ -95,6 +95,7 @@ function Index() {
   const [playing, setPlaying] = useState(true);
   const [elapsed, setElapsed] = useState(0);
   const [online, setOnline] = useState(28);
+  const [time, setTime] = useState(() => new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
   const elapsedRef = useRef(0);
 
   const track = TRACKS[index] ?? TRACKS[0]!;
@@ -124,6 +125,13 @@ function Index() {
     return () => window.clearInterval(id);
   }, []);
 
+  useEffect(() => {
+    const id = window.setInterval(() => {
+      setTime(new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, []);
+
   const progress = (elapsed / track.duration) * 100;
 
   return (
@@ -138,8 +146,11 @@ function Index() {
 
       {/* top bar */}
       <div className="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-start justify-between p-5">
-        <span className="text-sm font-medium tabular-nums text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]">
-          Deluxe Saloon
+        <span
+          className="text-sm font-medium tabular-nums text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
+          aria-live="polite"
+        >
+          {time}
         </span>
         <span
           className="pointer-events-auto inline-flex items-center gap-2 text-sm font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
