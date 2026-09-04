@@ -33,12 +33,7 @@ type PlaybackData = {
   isBuffering?: boolean;
   position?: number;
   duration?: number;
-  trackURI?: string;
-  metadata?: {
-    title?: string;
-    artists?: { name?: string }[];
-    images?: { url?: string }[];
-  };
+  playingURI?: string;
 };
 
 declare global {
@@ -58,6 +53,28 @@ function fmt(sec: number) {
 export function MusicPlayer() {
   const mountRef = useRef<HTMLDivElement>(null);
   const controllerRef = useRef<EmbedController | null>(null);
+  const lastUriRef = useRef<string>("");
+
+  const fetchTrackInfo = useCallback(async (uri: string) => {
+    const id = uri.split(":").pop();
+    if (!id) return;
+    try {
+      const res = await fetch(
+        `https://open.spotify.com/oembed?url=${encodeURIComponent(`https://open.spotify.com/track/${id}`)}`,
+      );
+      if (!res.ok) return;
+      const info: { title?: string; author_name?: string; thumbnail_url?: string } = await res.json();
+      if (info.title) {
+        setTrack({
+          title: info.title,
+          artist: info.author_name ?? "",
+          cover: info.thumbnail_url ?? coverAsset.url,
+        });
+      }
+    } catch {
+      // keep placeholder on failure
+    }
+  }, []);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [position, setPosition] = useState(0);
@@ -78,20 +95,15 @@ export function MusicPlayer() {
       api.createController(mount, { width: "0", height: "0", uri: PLAYLIST_URI }, (controller) => {
         controllerRef.current = controller;
         setReady(true);
-        controller.addListener("playback_update", (e) => {
-          console.log("SALOON_PLAYBACK", JSON.stringify(e));
-          const data = e?.data;
+        controller.addListener("playback_update", ({ data }) => {
           if (!data) return;
           setPlaying(!data.isPaused && !data.isBuffering);
           setPosition((data.position ?? 0) / 1000);
           setDuration((data.duration ?? 0) / 1000);
-          const meta = data.metadata;
-          if (meta?.title) {
-            setTrack({
-              title: meta.title,
-              artist: meta.artists?.map((a) => a?.name).filter(Boolean).join(", ") || "",
-              cover: meta.images?.[0]?.url ?? coverAsset.url,
-            });
+          const uri = data.playingURI;
+          if (uri && uri !== lastUriRef.current) {
+            lastUriRef.current = uri;
+            void fetchTrackInfo(uri);
           }
         });
       });
