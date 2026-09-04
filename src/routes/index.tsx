@@ -154,7 +154,7 @@ function Index() {
         </span>
         <div className="pointer-events-auto flex items-center gap-1">
           <a
-            href="https://open.spotify.com/playlist/2AVjI8Z57bqMJVtU3V9X1Q"
+            href="https://open.spotify.com/playlist/2AVjI8Z57bqMJVtU3V9X1Q?si=rZ1U5KR5RuqZyP7s2dvJHw"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-full p-2.5 text-sm font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] transition hover:opacity-80 active:scale-95 sm:px-3 sm:py-2"
@@ -166,7 +166,7 @@ function Index() {
             <span className="hidden sm:inline">Spotify</span>
           </a>
           <a
-            href="https://music.youtube.com/playlist?list=PLTJ1PnzCWyFw"
+            href="https://music.youtube.com/playlist?list=PLTJ1PnzCWyFw&si=LWHOgOar5xw7BKnT"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-2 rounded-full p-2.5 text-sm font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)] transition hover:opacity-80 active:scale-95 sm:px-3 sm:py-2"
