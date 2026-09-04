@@ -144,7 +144,7 @@ export function MusicPlayer() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-lg font-semibold text-white sm:text-xl">{track.title}</p>
-            <p className="truncate text-base text-white/45">{track.artist}</p>
+            {track.artist ? <p className="truncate text-base text-white/45">{track.artist}</p> : null}
           </div>
           <div className="flex items-end gap-[3px] pr-1" aria-hidden="true">
             {[0, 1, 2, 3, 4].map((i) => (
