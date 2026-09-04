@@ -98,7 +98,7 @@ import audio48 from "@/assets/tracks/tumse-milne-ko-dil.mp3.asset.json";
 import cover48 from "@/assets/tracks/tumse-milne-ko-dil.jpg.asset.json";
 import audio49 from "@/assets/tracks/woh-meri-neend-mera-chain.mp3.asset.json";
 import cover49 from "@/assets/tracks/woh-meri-neend-mera-chain.jpg.asset.json";
-import fallbackCover from "@/assets/fallback-cover.jpg.asset.json";
+import fallbackCover from "@/assets/cover-default.jpg.asset.json";
 
 export interface Track {
   title: string;
