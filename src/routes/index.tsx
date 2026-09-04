@@ -216,9 +216,6 @@ function Index() {
           className="w-60 max-w-[70vw] -translate-y-2 drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] sm:w-80"
         />
         <h1 className="sr-only">Deluxe Saloon</h1>
-        <p className="mt-6 max-w-sm text-balance text-sm text-white/80 drop-shadow-[0_1px_8px_rgba(0,0,0,0.7)] sm:text-base">
-          90s Bollywood bangers that play at Indian barber shops.
-        </p>
       </div>
 
       {/* player */}
