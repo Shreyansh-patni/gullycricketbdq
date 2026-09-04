@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import bgAsset from "@/assets/street-bg.png.asset.json";
 import logoAsset from "@/assets/saloon-logo.png.asset.json";
 import { MusicPlayer } from "@/components/player/MusicPlayer";
-import { Github, Instagram, Twitter, X } from "lucide-react";
+import { Github, Instagram, X } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
