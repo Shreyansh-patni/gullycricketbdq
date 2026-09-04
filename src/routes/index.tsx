@@ -97,7 +97,7 @@ function Index() {
   const [online, setOnline] = useState(28);
   const elapsedRef = useRef(0);
 
-  const track = TRACKS[index];
+  const track = TRACKS[index] ?? TRACKS[0]!;
 
   useEffect(() => {
     elapsedRef.current = 0;
