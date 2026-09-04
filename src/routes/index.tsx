@@ -153,7 +153,7 @@ function Index() {
           {time}
         </span>
         <span
-          className="pointer-events-auto inline-flex items-center gap-2 text-sm font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
+          className="pointer-events-auto inline-flex items-center justify-self-center gap-2 text-sm font-medium text-white drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
           aria-live="polite"
         >
           <span className="relative flex h-2.5 w-2.5">
@@ -163,7 +163,7 @@ function Index() {
           <span className="tabular-nums">{online}</span>
           <span className="text-white/70">online</span>
         </span>
-        <div className="pointer-events-auto flex items-center gap-1">
+        <div className="pointer-events-auto flex items-center justify-self-end gap-1">
           <a
             href="https://open.spotify.com/playlist/2AVjI8Z57bqMJVtU3V9X1Q?si=rZ1U5KR5RuqZyP7s2dvJHw"
             target="_blank"
