@@ -145,9 +145,9 @@ function Index() {
       </div>
 
       {/* top bar */}
-      <div className="pointer-events-none fixed inset-x-0 top-0 z-20 flex items-start justify-between p-5">
+      <div className="pointer-events-none fixed inset-x-0 top-0 z-20 grid grid-cols-3 items-start p-5">
         <span
-          className="text-sm font-medium tabular-nums text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
+          className="justify-self-start text-sm font-medium tabular-nums text-white/90 drop-shadow-[0_1px_6px_rgba(0,0,0,0.6)]"
           aria-live="polite"
         >
           {time}
