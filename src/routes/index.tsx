@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import bgAsset from "@/assets/street-bg.png.asset.json";
 import logoAsset from "@/assets/saloon-logo.png.asset.json";
+import { SpotifyPlayer } from "@/components/player/SpotifyPlayer";
+import { getPlaylist } from "@/lib/spotify.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -21,102 +23,21 @@ export const Route = createFileRoute("/")({
       { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
+  loader: () => getPlaylist(),
   component: Index,
 });
 
-type Track = {
-  title: string;
-  artist: string;
-  film: string;
-  year: number;
-  duration: number;
-  tint: string;
-};
-
-const TRACKS: Track[] = [
-  {
-    title: "Pehla Nasha",
-    artist: "Udit Narayan, Sadhana Sargam",
-    film: "Jo Jeeta Wohi Sikandar",
-    year: 1992,
-    duration: 292,
-    tint: "linear-gradient(135deg,#e0483f,#f2a541)",
-  },
-  {
-    title: "Chura Ke Dil Mera",
-    artist: "Kumar Sanu, Alka Yagnik",
-    film: "Main Khiladi Tu Anari",
-    year: 1994,
-    duration: 331,
-    tint: "linear-gradient(135deg,#2f6f6a,#c9d36a)",
-  },
-  {
-    title: "Ae Kaash Ke Hum",
-    artist: "Kumar Sanu",
-    film: "Kabhi Haan Kabhi Naa",
-    year: 1993,
-    duration: 305,
-    tint: "linear-gradient(135deg,#7b2d3b,#e08b5a)",
-  },
-  {
-    title: "Tu Cheez Badi Hai",
-    artist: "Udit Narayan, Neelam",
-    film: "Mohra",
-    year: 1994,
-    duration: 268,
-    tint: "linear-gradient(135deg,#b4442e,#f0c46a)",
-  },
-  {
-    title: "Kuch Kuch Hota Hai",
-    artist: "Udit Narayan, Alka Yagnik",
-    film: "Kuch Kuch Hota Hai",
-    year: 1998,
-    duration: 314,
-    tint: "linear-gradient(135deg,#3d5a80,#98c1d9)",
-  },
-  {
-    title: "Sona Kitna Sona Hai",
-    artist: "Poornima, Vinod Rathod",
-    film: "Hero No. 1",
-    year: 1997,
-    duration: 287,
-    tint: "linear-gradient(135deg,#8a5a2b,#e8b04b)",
-  },
-];
-
-function fmt(sec: number) {
-  const m = Math.floor(sec / 60);
-  const s = Math.floor(sec % 60);
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
-
 function Index() {
-  const [index, setIndex] = useState(0);
-  const [playing, setPlaying] = useState(true);
-  const [elapsed, setElapsed] = useState(0);
+  const tracks = Route.useLoaderData();
   const [online, setOnline] = useState(28);
-  const [time, setTime] = useState(() => new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
-  const elapsedRef = useRef(0);
-
-  const track = TRACKS[index] ?? TRACKS[0]!;
-
-  useEffect(() => {
-    elapsedRef.current = 0;
-    setElapsed(0);
-  }, [index]);
-
-  useEffect(() => {
-    if (!playing) return;
-    const id = window.setInterval(() => {
-      elapsedRef.current += 1;
-      if (elapsedRef.current >= track.duration) {
-        setIndex((i) => (i + 1) % TRACKS.length);
-      } else {
-        setElapsed(elapsedRef.current);
-      }
-    }, 1000);
-    return () => window.clearInterval(id);
-  }, [playing, track.duration]);
+  const [time, setTime] = useState(() =>
+    new Date().toLocaleTimeString(undefined, {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    }),
+  );
 
   useEffect(() => {
     const id = window.setInterval(() => {
@@ -127,12 +48,17 @@ function Index() {
 
   useEffect(() => {
     const id = window.setInterval(() => {
-      setTime(new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
+      setTime(
+        new Date().toLocaleTimeString(undefined, {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: false,
+        }),
+      );
     }, 1000);
     return () => window.clearInterval(id);
   }, []);
-
-  const progress = (elapsed / track.duration) * 100;
 
   return (
     <div className="relative flex min-h-dvh flex-col items-center justify-between overflow-hidden">
@@ -231,82 +157,7 @@ function Index() {
 
       {/* player */}
       <div className="z-20 w-full px-4 pb-6 sm:pb-8">
-        <div className="mx-auto flex w-full max-w-xl items-center gap-3 rounded-2xl border border-white/15 bg-black/45 p-3 backdrop-blur-xl sm:gap-4 sm:p-4">
-          <div
-            className="relative grid h-14 w-14 shrink-0 place-items-center overflow-hidden rounded-xl sm:h-16 sm:w-16"
-            style={{ backgroundImage: track.tint }}
-            aria-hidden="true"
-          >
-            <div className="flex items-end gap-[3px]">
-              {[0, 1, 2, 3].map((i) => (
-                <span
-                  key={i}
-                  className="w-[3px] rounded-full bg-white/85"
-                  style={{
-                    height: 10 + i * 4,
-                    animation: playing ? `saloon-eq 900ms ease-in-out ${i * 120}ms infinite alternate` : "none",
-                  }}
-                />
-              ))}
-            </div>
-          </div>
-
-          <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-semibold text-white sm:text-base">{track.title}</p>
-            <p className="truncate text-xs text-white/60 sm:text-sm">
-              {track.artist} · {track.film} ({track.year})
-            </p>
-            <div className="mt-2 flex items-center gap-2">
-              <span className="text-[11px] tabular-nums text-white/50">{fmt(elapsed)}</span>
-              <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/15">
-                <div
-                  className="h-full rounded-full bg-white/80 transition-[width] duration-1000 ease-linear"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <span className="text-[11px] tabular-nums text-white/50">{fmt(track.duration)}</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              aria-label="Previous track"
-              onClick={() => setIndex((i) => (i - 1 + TRACKS.length) % TRACKS.length)}
-              className="grid h-9 w-9 place-items-center rounded-full text-white/80 transition hover:bg-white/15 hover:text-white active:scale-95"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M6 5h2v14H6zM20 5v14l-11-7z" />
-              </svg>
-            </button>
-            <button
-              type="button"
-              aria-label={playing ? "Pause" : "Play"}
-              onClick={() => setPlaying((p) => !p)}
-              className="grid h-11 w-11 place-items-center rounded-full bg-white text-black transition hover:bg-white/90 active:scale-95"
-            >
-              {playing ? (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M7 5h4v14H7zM13 5h4v14h-4z" />
-                </svg>
-              ) : (
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M7 4l13 8-13 8z" />
-                </svg>
-              )}
-            </button>
-            <button
-              type="button"
-              aria-label="Next track"
-              onClick={() => setIndex((i) => (i + 1) % TRACKS.length)}
-              className="grid h-9 w-9 place-items-center rounded-full text-white/80 transition hover:bg-white/15 hover:text-white active:scale-95"
-            >
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M16 5h2v14h-2zM4 5l11 7-11 7z" />
-              </svg>
-            </button>
-          </div>
-        </div>
+        <SpotifyPlayer tracks={tracks} />
       </div>
     </div>
   );
