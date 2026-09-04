@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import bgAsset from "@/assets/street-bg.png.asset.json";
 import logoAsset from "@/assets/saloon-logo.png.asset.json";
 import { MusicPlayer } from "@/components/player/MusicPlayer";
-import { TRACKS } from "@/lib/tracks";
 
 export const Route = createFileRoute("/")({
   head: () => ({
