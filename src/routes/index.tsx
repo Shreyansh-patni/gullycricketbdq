@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import bgAsset from "@/assets/street-bg.png.asset.json";
 import logoAsset from "@/assets/saloon-logo.png.asset.json";
+import { SpotifyPlayer } from "@/components/player/SpotifyPlayer";
+import { getPlaylist } from "@/lib/spotify.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
