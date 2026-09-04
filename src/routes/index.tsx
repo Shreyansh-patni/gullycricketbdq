@@ -143,7 +143,7 @@ function Index() {
       </div>
 
       {/* hero */}
-      <div className="flex flex-1 flex-col items-center justify-center px-6 pt-44 pb-10 text-center">
+      <div className="flex flex-1 flex-col items-center justify-center px-6 pt-[88px] pb-10 text-center">
         <img
           src={logoAsset.url}
           alt="Deluxe Saloon"
