@@ -131,7 +131,16 @@ export function MusicPlayer() {
 
   return (
     <div className="mx-auto w-full max-w-xl">
-      <div className="rounded-[28px] bg-black/90 p-5 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.9)] ring-1 ring-white/10 backdrop-blur-xl sm:p-6">
+      <div className="relative overflow-hidden rounded-[28px] bg-white/10 p-5 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.65),inset_0_1px_1px_rgba(255,255,255,0.35),inset_0_-1px_1px_rgba(255,255,255,0.08)] ring-1 ring-white/25 backdrop-blur-2xl backdrop-saturate-150 sm:p-6">
+        {/* liquid glass sheen */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(255,255,255,0.28)_0%,rgba(255,255,255,0.06)_28%,transparent_45%,rgba(255,255,255,0.08)_80%,rgba(255,255,255,0.2)_100%)]"
+        />
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-1/2 left-1/2 h-[140%] w-[80%] -translate-x-1/2 rounded-[100%] bg-white/15 blur-3xl"
+        />
         {/* hidden Spotify controller */}
         <div ref={mountRef} className="hidden" aria-hidden="true" />
 
