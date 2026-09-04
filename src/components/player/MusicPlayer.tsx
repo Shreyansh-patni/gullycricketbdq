@@ -77,7 +77,7 @@ export function MusicPlayer() {
       if (controllerRef.current) return;
       api.createController(mount, { width: "0", height: "0", uri: PLAYLIST_URI }, (controller) => {
         controllerRef.current = controller;
-        controller.addListener("ready", () => setReady(true));
+        setReady(true);
         controller.addListener("playback_update", ({ data }) => {
           if (!data) return;
           setPlaying(!data.isPaused && !data.isBuffering);
