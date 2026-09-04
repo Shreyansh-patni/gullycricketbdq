@@ -6,7 +6,7 @@ Every song you upload gets added to the player. Each file already carries its co
 
 - The player plays your real songs instead of the Spotify preview.
 - Each song shows its own cover picture, title, and singers (Kumar Sanu, Alka Yagnik, Anuradha Paudwal, Udit Narayan and the rest, exactly as tagged in your files).
-- All 30 songs uploaded so far go in, in alphabetical order; any further batches you send get appended the same way.
+- Every song uploaded so far goes in (40 at the moment), in alphabetical order; any further batches you send get appended the same way.
 - Play, pause, previous, next, auto-play of the following song, the moving progress bar with elapsed and remaining time, and the animated waveform all keep working.
 - The current glass look of the card stays exactly as it is.
 - The Spotify and YouTube Music buttons at the top stay, so people can still open the full playlist there.
