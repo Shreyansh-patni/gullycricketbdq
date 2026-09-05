@@ -15,16 +15,16 @@ const logoAssetUrl =
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Deluxe Saloon — 90s Bollywood Barber Shop Radio" },
+      { title: "Gully Cricket BDQ — 90s Nostalgia Radio & Street Ambiance" },
       {
         name: "description",
         content:
-          "Deluxe Saloon streams 90s Bollywood bangers — the tapes that play all day at Indian barber shops.",
+          "Gully Cricket BDQ streams 90s Bollywood bangers — street nostalgia & radio vibes.",
       },
-      { property: "og:title", content: "Deluxe Saloon" },
+      { property: "og:title", content: "Gully Cricket BDQ" },
       {
         property: "og:description",
-        content: "90s Bollywood bangers that play at Indian barber shops.",
+        content: "90s Bollywood bangers & street nostalgia radio.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -154,10 +154,10 @@ function Index() {
       <div className="flex flex-1 flex-col items-center justify-center px-6 pt-[88px] pb-10 text-center">
         <img
           src={logoAssetUrl}
-          alt="Deluxe Saloon"
+          alt="Gully Cricket BDQ"
           className="w-72 max-w-[70vw] -translate-y-7 drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] sm:w-96"
         />
-        <h1 className="sr-only">Deluxe Saloon</h1>
+        <h1 className="sr-only">Gully Cricket BDQ</h1>
       </div>
 
       {/* player */}
