@@ -59,7 +59,6 @@ export function MusicPlayer() {
     if (!el) return;
     el.load();
     if (wasPlaying.current) void el.play().catch(() => setPlaying(false));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index]);
 
   const seek = useCallback((clientRatio: number) => {
@@ -107,7 +106,9 @@ export function MusicPlayer() {
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold text-white sm:text-base">{track.title}</p>
-            {track.artist ? <p className="truncate text-xs text-white/45 sm:text-sm">{track.artist}</p> : null}
+            {track.artist ? (
+              <p className="truncate text-xs text-white/45 sm:text-sm">{track.artist}</p>
+            ) : null}
           </div>
           <div className="flex items-end gap-[2px] pr-1" aria-hidden="true">
             {[0, 1, 2, 3, 4].map((i) => (
@@ -116,7 +117,9 @@ export function MusicPlayer() {
                 className="w-[2.5px] rounded-full bg-[#d9a58c]"
                 style={{
                   height: [5, 9, 12, 9, 6][i],
-                  animation: playing ? `saloon-eq 900ms ease-in-out ${i * 110}ms infinite alternate` : "none",
+                  animation: playing
+                    ? `saloon-eq 900ms ease-in-out ${i * 110}ms infinite alternate`
+                    : "none",
                 }}
               />
             ))}
@@ -145,7 +148,9 @@ export function MusicPlayer() {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <span className="text-xs tabular-nums text-white/60">−{fmt(Math.max(0, duration - position))}</span>
+          <span className="text-xs tabular-nums text-white/60">
+            −{fmt(Math.max(0, duration - position))}
+          </span>
         </div>
 
         {/* controls */}
@@ -167,12 +172,24 @@ export function MusicPlayer() {
             className="text-white transition hover:opacity-80 active:scale-95"
           >
             {playing ? (
-              <svg width="22" height="24" viewBox="0 0 34 38" fill="currentColor" aria-hidden="true">
+              <svg
+                width="22"
+                height="24"
+                viewBox="0 0 34 38"
+                fill="currentColor"
+                aria-hidden="true"
+              >
                 <rect x="3" y="2" width="10" height="34" rx="3" />
                 <rect x="21" y="2" width="10" height="34" rx="3" />
               </svg>
             ) : (
-              <svg width="22" height="24" viewBox="0 0 34 38" fill="currentColor" aria-hidden="true">
+              <svg
+                width="22"
+                height="24"
+                viewBox="0 0 34 38"
+                fill="currentColor"
+                aria-hidden="true"
+              >
                 <path d="M5 3l26 16L5 35z" />
               </svg>
             )}
@@ -191,7 +208,12 @@ export function MusicPlayer() {
 
         {/* footer row */}
         <div className="relative mt-3 flex items-center justify-between text-[10px] text-white/40">
-          <a href={PLAYLIST_URL} target="_blank" rel="noopener noreferrer" className="transition hover:text-white/70">
+          <a
+            href={PLAYLIST_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="transition hover:text-white/70"
+          >
             Open playlist on Spotify
           </a>
           <button
@@ -222,7 +244,12 @@ export function MusicPlayer() {
                     i === index ? "bg-white/15" : ""
                   }`}
                 >
-                  <img src={t.cover} alt="" loading="lazy" className="h-7 w-7 rounded-md object-cover" />
+                  <img
+                    src={t.cover}
+                    alt=""
+                    loading="lazy"
+                    className="h-7 w-7 rounded-md object-cover"
+                  />
                   <span className="min-w-0 flex-1">
                     <span className="block truncate text-xs text-white">{t.title}</span>
                     <span className="block truncate text-[10px] text-white/45">{t.artist}</span>

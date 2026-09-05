@@ -7,8 +7,10 @@ import logoAssetJson from "@/assets/saloon-logo.png.asset.json";
 import { MusicPlayer } from "@/components/player/MusicPlayer";
 import { Github, Instagram, X } from "lucide-react";
 
-const bgAssetUrl = typeof bgAssetFile === "string" ? bgAssetFile : (bgAssetJson as { url: string }).url;
-const logoAssetUrl = typeof logoAssetFile === "string" ? logoAssetFile : (logoAssetJson as { url: string }).url;
+const bgAssetUrl =
+  typeof bgAssetFile === "string" ? bgAssetFile : (bgAssetJson as { url: string }).url;
+const logoAssetUrl =
+  typeof logoAssetFile === "string" ? logoAssetFile : (logoAssetJson as { url: string }).url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
