@@ -1,9 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import bgAsset from "@/assets/street-bg.png.asset.json";
-import logoAsset from "@/assets/saloon-logo.png.asset.json";
+import bgAssetFile from "@/assets/street-bg.png";
+import logoAssetFile from "@/assets/saloon-logo.png";
+import bgAssetJson from "@/assets/street-bg.png.asset.json";
+import logoAssetJson from "@/assets/saloon-logo.png.asset.json";
 import { MusicPlayer } from "@/components/player/MusicPlayer";
 import { Github, Instagram, X } from "lucide-react";
+
+const bgAssetUrl = typeof bgAssetFile === "string" ? bgAssetFile : (bgAssetJson as { url: string }).url;
+const logoAssetUrl = typeof logoAssetFile === "string" ? logoAssetFile : (logoAssetJson as { url: string }).url;
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -62,7 +67,7 @@ function Index() {
     <div className="relative flex min-h-dvh flex-col items-center justify-between overflow-hidden">
       <div
         className="fixed inset-0 -z-10 bg-black bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${bgAsset.url})` }}
+        style={{ backgroundImage: `url(${bgAssetUrl})` }}
         aria-hidden="true"
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/80" />
@@ -146,7 +151,7 @@ function Index() {
       {/* hero */}
       <div className="flex flex-1 flex-col items-center justify-center px-6 pt-[88px] pb-10 text-center">
         <img
-          src={logoAsset.url}
+          src={logoAssetUrl}
           alt="Deluxe Saloon"
           className="w-72 max-w-[70vw] -translate-y-7 drop-shadow-[0_4px_24px_rgba(0,0,0,0.55)] sm:w-96"
         />
